@@ -8,6 +8,8 @@ const app = express()
 module.exports = app
 const User = require('./db/models/user')
 var session = require('express-session');
+const passport = require('passport');
+const FacebookStrategy = require('passport-facebook').Strategy;
 
 /**
  * In your development environment, you can keep all of your
@@ -37,6 +39,21 @@ const createApp = () => {
     console.log('session', req.session);
     next();
   });
+  app.use(passport.initialize());
+  app.use(passport.session());
+  passport.use(new FacebookStrategy({
+      clientID: process.env.clientID,
+      clientSecret: process.env.clientSecret,
+      callbackURL: process.env.callbackURL
+    },
+    function(accessToken, refreshToken, profile, cb) {
+      console.log('---', 'in verification callback', profile, '---');
+      User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+        return cb(err, user);
+      });
+      done();
+    }
+  ));
   app.use('/auth', require('./auth'))
   app.use('/api', require('./api'))
 

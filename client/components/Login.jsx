@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
 import axios from 'axios'
 import {connect} from 'react-redux'
-import {verifyUser, signupUser} from '../store'
+import {verifyUser, signupUser, logoutCurrentUser} from '../store'
 
 export class Login extends Component{
   constructor(props) {
@@ -13,9 +14,10 @@ export class Login extends Component{
     this.onChange = this.onChange.bind(this)
     this.onLoginSubmit = this.onLoginSubmit.bind(this)
     this.onSignupSubmit = this.onSignupSubmit.bind(this)
+    this.onLogoutSubmit = this.onLogoutSubmit.bind(this)
   }
   componentDidMount(){
-    axios.get('/auth')
+    axios.get('/auth/me')
     .then(res => res.data.userId)
     .then(userId => {
       if(userId){
@@ -40,13 +42,18 @@ export class Login extends Component{
     this.props.signupUser(this.state)
     .then(user=>console.log(this.props.user))
   }
+  onLogoutSubmit(ev){
+    ev.preventDefault();
+    this.props.logoutUser()
+    .then(()=>this.setState({email:'', password:''}))
+  }
   render(){
     const {user} = this.props
     return (
       <div>
       {
         !user.id &&
-        <div id='Login'>
+        <div id='login'>
           <form className="manualLogin">
             <input placeholder='email' name='email' onChange={this.onChange}></input>
             <input placeholder='password' name='password' onChange={this.onChange}></input>
@@ -55,12 +62,17 @@ export class Login extends Component{
           </form>
           <div className="fb-login-button"
               data-max-rows="1"
-              data-size="large"
+              data-size="medium"
               data-button-type="continue_with"
-              data-show-faces="false"
-              data-auto-logout-link="true"
-              data-use-continue-as="false">
+              data-auto-logout-link="true">
           </div>
+          <Link to='/auth/facebook'><button>Sign In With FB </button></Link>
+        </div>
+      }
+      {
+        user.id &&
+        <div id='logout'>
+          <button onClick={this.onLogoutSubmit}>Log Out</button>
         </div>
       }
       </div>
@@ -79,6 +91,9 @@ const mapDispatch = (dispatch) => {
     },
     signupUser: (user)=>{
       return dispatch(signupUser(user))
+    },
+    logoutUser: (user)=>{
+      return dispatch(logoutCurrentUser())
     }
   }
 }

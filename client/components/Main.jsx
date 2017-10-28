@@ -9,10 +9,6 @@ import Navbar from './Navbar.jsx';
 import ColourPicker from './ColourPicker.jsx';
 
 export default class Main extends Component {
-  componentDidMount(){
-    axios.get('/auth')
-    .then(res => {const {userId} = res.data})
-  }
   render(){
     return (
       <div>

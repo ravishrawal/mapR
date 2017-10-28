@@ -46,23 +46,13 @@ export function signupUser(user){
 	};
 }
 
-export function logout(){
+export function logoutCurrentUser(){
 	return function thunk(dispatch){
 		return axios.post('/auth/logout')
 					.then(() => {
 						dispatch(removeCurrentUser());
 					})
 					.catch( err => { throw err; });
-	}
-}
-
-export function loadUser(){
-	return function thunk(dispatch){
-		return axios.get('/auth/me')
-				.then(res => res.data)
-				.then(user => {
-					if (user) dispatch(setCurrentUser(user));
-				})
 	}
 }
 

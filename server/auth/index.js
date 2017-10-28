@@ -4,9 +4,9 @@ module.exports = router
 
 
 
-router.use('/fb', require('./FB'))
+router.use('/facebook', require('./FB'))
 
-router.get('/', (req, res, next) => {
+router.get('/me', (req, res, next) => {
   res.send(req.session)
 })
 
@@ -36,7 +36,13 @@ router.post('/signup', (req, res, next) => {
   FBID ? credential = {FBID} : credential = {email, password}
   User.create(credential)
     .then(user => {
+        req.session.userId = user.id;
         res.status(200).send(user)
       })
     .catch(next)
+})
+
+router.post('/logout', (req, res, next) =>{
+  req.session.destroy();
+  next();
 })
