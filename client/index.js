@@ -1,16 +1,17 @@
-import './index.scss'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import {render} from 'react-dom'
 import {Provider} from 'react-redux'
 import store from './store'
-import Routes from './routes'
+import Main from './components/Main.jsx'
+import {BrowserRouter} from 'react-router-dom'
 
-// establishes socket connection
-import './socket'
+window.store = store;
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Routes />
-  </Provider>,
-  document.getElementById('app')
+render(
+	<Provider store={store}>
+		<BrowserRouter>
+			<Main />
+		</BrowserRouter>
+	</Provider>,
+	document.getElementById('main')
 )
