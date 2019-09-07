@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
 import {connect} from 'react-redux'
-import {verifyUser, signupUser, logoutCurrentUser} from '../store'
+import {verifyUser, signupUser, logoutCurrentUser, getFBUserPlaces} from '../store'
 
 export class Login extends Component{
   constructor(props) {
@@ -12,6 +12,7 @@ export class Login extends Component{
         password: ''
     };
     this.onChange = this.onChange.bind(this)
+    this.onFBClick = this.onFBClick.bind(this)
     this.onLoginSubmit = this.onLoginSubmit.bind(this)
     this.onSignupSubmit = this.onSignupSubmit.bind(this)
     this.onLogoutSubmit = this.onLogoutSubmit.bind(this)
@@ -27,6 +28,17 @@ export class Login extends Component{
       }
     })
   }
+  onFBClick(){
+    var {loginUser, signupNewUser} = this.props;
+    var {setState} = this
+    FB.login(function(response) {
+      signupNewUser({FBID:response.authResponse.userID})
+      console.log(response);
+    }, {scope: 'user_tagged_places'});
+    setTimeout(()=>{
+      getFBUserPlaces(this.props.user.id)
+    }, 2000)
+  }
   onChange(ev){
     ev.preventDefault();
     var {name, value} = ev.target;
@@ -39,7 +51,7 @@ export class Login extends Component{
   }
   onSignupSubmit(ev){
     ev.preventDefault();
-    this.props.signupUser(this.state)
+    this.props.signupNewUser(this.state)
     .then(user=>console.log(this.props.user))
   }
   onLogoutSubmit(ev){
@@ -60,13 +72,7 @@ export class Login extends Component{
             <button onClick={this.onLoginSubmit}>Log In</button>
             <button onClick={this.onSignupSubmit}>Sign Up</button>
           </form>
-          <div className="fb-login-button"
-              data-max-rows="1"
-              data-size="medium"
-              data-button-type="continue_with"
-              data-auto-logout-link="true">
-          </div>
-          <Link to='/auth/facebook'><button>Sign In With FB </button></Link>
+            <button onClick={this.onFBClick}>FB</button>
         </div>
       }
       {
@@ -89,7 +95,7 @@ const mapDispatch = (dispatch) => {
     loginUser: (user)=>{
       return dispatch(verifyUser(user))
     },
-    signupUser: (user)=>{
+    signupNewUser: (user)=>{
       return dispatch(signupUser(user))
     },
     logoutUser: (user)=>{

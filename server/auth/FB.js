@@ -17,7 +17,7 @@ router.get('/', passport.authenticate('facebook', { scope: 'email' }));
 router.get('/callback',
   passport.authenticate('facebook', {
     successRedirect: '/', // or wherever
-    failureRedirect: '/' // or wherever
+    failureRedirect: 'twitter.com' // or wherever
   })
 );
 

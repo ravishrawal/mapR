@@ -8,12 +8,14 @@ import Login from './Login.jsx';
 import Navbar from './Navbar.jsx';
 import ColourPicker from './ColourPicker.jsx';
 
+console.log(Map);
+
 export default class Main extends Component {
   render(){
     return (
       <div>
-        <Map />
         <Route path='/' component={Login} />
+        <Map />
         <Navbar />
         <ColourPicker />
       </div>

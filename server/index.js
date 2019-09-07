@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 8080
 const app = express()
 module.exports = app
 const User = require('./db/models/user')
+const Place = require('./db/models/place')
 var session = require('express-session');
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -94,6 +95,22 @@ if (require.main === module) {
         name: "Zeke",
         email: "zeke@zeke.zeke",
         password: "123"
+      })
+      .then(user => {
+        Promise.all([
+        Place.create({lat:40, long:50, name:'Place1', userId:user.id}),
+        Place.create({lat:25, long:13, name:'Place1', userId:user.id}),
+        Place.create({lat:89, long:09, name:'Place1', userId:user.id}),
+        Place.create({lat:65, long:08, name:'Place1', userId:user.id}),
+        Place.create({lat:2, long:07, name:'Place1', userId:user.id}),
+        Place.create({lat:23, long:78, name:'Place1', userId:user.id}),
+        Place.create({lat:40, long:43, name:'Place1', userId:user.id}),
+        Place.create({lat:33, long:65, name:'Place1', userId:user.id}),
+        Place.create({lat:78, long:02, name:'Place1', userId:user.id}),
+        Place.create({lat:13, long:23, name:'Place1', userId:user.id}),
+        Place.create({lat:40, long:22, name:'Place1', userId:user.id}),
+        Place.create({lat:40, long:75, name:'Place1', userId:user.id})
+        ])
       })
     })
     .then(startListening)
